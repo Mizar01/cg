@@ -1,0 +1,8 @@
+.cssCard {
+	display: inline-block;
+	width: 80px; max-width: 80px;
+	height: 140px; max-height: 140px;
+	border: 1px solid blue;
+	margin: 10px;
+	background-color: gold;
+}

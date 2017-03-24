@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head> 
+      <!-- Compatible electron before import --> 
+      <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>    
+      <script src="./jq/jquery-2.1.1.min.js"></script>
+      <script src="./jq/typed.min.js"></script>
+      <script src="./bs/bootstrap.min.js"></script>
+      <script src="game.js"></script>
+      <script src="cards.js"></script>
+      <script src="player.js"></script>
+      <!-- Compatible electron afer import -->
+      <script>if (window.module) module = window.module;</script>
+      <link href="./bs/bootstrap_cyborg.min.css" rel="stylesheet">
+      <link href="./css/style.css" rel="stylesheet">
+      <!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+      <script>
+            $(function() {
+                  htmlInit()
+                  start();
+            })
+      </script>
+</head>
+<body>
+      <div class="container">
+            <div><small><span class="expandBox" data-ref="fullDeck">All Cards</small></div>
+            <div class="jumbotron hidden" id="fullDeck">
+            </div>
+            <div><small>Discarded Cards</small></div>
+            <div class="jumbotron" id="discardDeck">
+            </div>
+            <div><small>Player 2 Cards</small></div>
+            <div class="jumbotron" id="player1-handSet">
+            </div>
+            <div><small>Played Cards</small></div>
+            <div>      
+                  <div class="row">  
+                        <div class="col-md-9 jumbotron alert alert-success" id="player1-playSet">
+                        </div>
+                        <div class="col-md-3 jumbotron alert alert-danger">
+                              <h2 id="player1-points"></h2>
+                        </div>
+                  </div>
+                  <div class="row">
+                        <div class="col-md-9 jumbotron alert alert-success" id="player2-playSet">
+                        </div>
+                        <div class="col-md-3 jumbotron alert alert-danger">
+                              <h2 id="player2-points"></h2>
+                        </div>
+
+                  </div>
+            </div>
+            <div><small>Player 2 Cards</small></div>
+            <div class="jumbotron" id="player2-handSet">
+            </div>
+
+
+      </container>
+</body>
+</html>

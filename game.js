@@ -20,6 +20,7 @@ var gameSet = {
 	"Heroine"   : ["3"],
 	"Bishop"    : ["6"],
 	"Drummer"   : ["6"],
+	// "Drummer"   : ["24"],
 	"Scarecrow" : ["16"],
 	"Surrender" : ["3"],
 	"Spy"       : ["12"],
@@ -105,11 +106,24 @@ function runGame() {
 }
 
 
+function getAllActiveModifiers() {
+	// get all active modifiers from both the playSets
+	// TODO : for now it's only for the current playSet
+	var mods = []
+	cPlayer.playSet.forEach(function(c) {
+		// TODO : avoid the combos if the combo is not enabled on cards
+		if (c.modifier != null) {
+			mods.push(c.modifier)
+		}
+	})
+	return mods
+}
+
 function calculatePoints() {
 	players.forEach(function(p) {
 		var tp = 0
 		p.playSet.forEach(function (c) {
-			tp += c.value
+			tp += c.getFinalValue()
 		})
 		p.points = tp
 	})
@@ -180,13 +194,24 @@ function shuffle(set) {
 	return set2
 }
 
-function htmlListCards(set, id) {
+function htmlListCards(set, id, inPlay=false) {
 	var t = ""
 	for (var ci in set) {
 		var c = set[ci]
 		var cname = c.short ? c.short : c.name
-		var cvalue = c.value != 0 ? "(" + c.value + ")" : ""
-		t += "<div class='cssCard'>" + cname + cvalue + "</div>"
+		var fvalue = inPlay ? c.getFinalValue() : c.value
+		var styleValue = ""
+		if (c.value < fvalue) {
+			styleValue = "better"
+		}  
+		if (c.value > fvalue) {
+			styleValue = "worse"
+		}
+		var htmlValue = "(" + fvalue + ")"
+		if (fvalue == c.value && c.value == 0) {
+			htmlValue = ""
+		}
+		t += "<div class='cssCard'>" + cname + "<span class='" + styleValue + "'>" + htmlValue + "</span></div>"
 		// t += "<span>[" + cname + "<strong>" + (c.value != 0 ? "(" + c.value + ")" : "") + "</strong>]</span>"
 	}
 	$("#" + id).html(t)
@@ -197,7 +222,7 @@ function showDeck(deck, dt="fullDeck") {
 }
 
 function showPlayerDeck(pIndex, dt="handSet") {
-	htmlListCards(players[pIndex][dt], "player" + (parseInt(pIndex) + 1) + "-" + dt)
+	htmlListCards(players[pIndex][dt], "player" + (parseInt(pIndex) + 1) + "-" + dt, dt == 'playSet')
 }
 
 function gameStartGiveCards() {
@@ -240,14 +265,26 @@ function getRandomCard(set) {
 
 
 function htmlInit() {
+
+	// ExpandBox
 	$(".expandBox").each(function() {
+		$(this).addClass("hidden")
+		var id = this.id
+		var title = this.dataset.title
+		var preEl = "<div><small><span class='expandBoxSwitch' data-ref='" + id + "'>" + title + "</small></div>"
+		$(preEl).insertBefore(this)
+	})
+	$(".expandBoxSwitch").each(function() {
 		$(this).css("cursor", "pointer")
 		$(this).html("[+]" + $(this).html())
-	})	
-	$(".expandBox").click(function() {
-		$("#" + this.dataset.ref).toggleClass("hidden")
-		$(this).html("[-]" + $(this).html().substring(3))
 	})
+	$(".expandBoxSwitch").click(function() {
+		var o = $("#" + this.dataset.ref)
+		o.toggleClass("hidden")
+		var plusMinus = o.hasClass("hidden") ? "+" : "-"
+		$(this).html("[" +  plusMinus + "]" + $(this).html().substring(3))
+	})
+
 }
 
 
@@ -258,6 +295,10 @@ Utils = {
 		var rnd = min + Math.random() * (max - min)
 		return Math.round(rnd)
 	}
+}
+
+function clog(n, v) {
+	console.log(n + ": " + v)
 }
 
 

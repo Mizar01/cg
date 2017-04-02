@@ -1,8 +1,11 @@
-Card = function(n, v, a, desc) {
+Card = function(n, v, canBeAffected, desc) {
 	this.name = n 
     this.value = v
-    this.affected = a
+    this.canBeAffected = canBeAffected
+    this.otherEffects = [] //Effects not caused by other cards currently played
     this.desc = desc
+    this.modifier = null // function affecting the entire playSet
+    this.modifierComboEnabled = false // the effect cannot be generally combined with other cards of the same type
     this.run = function() {
     	// As simple as possible
         // TODO : logic to put card in the table shouldn't be here
@@ -19,6 +22,28 @@ Card = function(n, v, a, desc) {
     }
     this.end = function() {
     	phase = "END_PLAY_CARD"
+    }
+
+    this.getFinalValue = function() {
+        var v = this.value
+        // special card effects
+        for (var e in this.otherEffects) {
+            v = this.applyEffect(v, e)
+        }
+        if (this.canBeAffected) {
+            getAllActiveModifiers().forEach(function(c) {
+                v = c(v)
+            })
+        }
+        return v
+    }
+
+    this.applyEffect = function(value, modifier) {
+        var name = modifier.split(",")[0]
+        var factor = modifier.split(",")[1]
+        if (name == "mult") {
+            return value * factor;
+        }
     }
 }
 
@@ -40,6 +65,9 @@ Heroine = function() {
 
 Drummer = function() {
 	Card.call(this, "Drummer", 0, false, "Drummer Desc")
+    this.modifier = function(v) {
+        return v * 2
+    }
 }
 
 Spy = function() {

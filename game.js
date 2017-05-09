@@ -106,16 +106,18 @@ function runGame() {
 }
 
 
-function getAllActiveModifiers() {
+function getAllActiveModifierCards() {
 	// get all active modifiers from both the playSets
-	// TODO : for now it's only for the current playSet
 	var mods = []
-	cPlayer.playSet.forEach(function(c) {
-		// TODO : avoid the combos if the combo is not enabled on cards
-		if (c.modifier != null) {
-			mods.push(c.modifier)
-		}
-	})
+	for (var i in players) {
+		var p = players[i]
+		p.playSet.forEach(function(c) {
+			// TODO : avoid the combos if the combo is not enabled on cards
+			if (c.modifier != null) {
+				mods.push(c)
+			}
+		})
+	}
 	return mods
 }
 
@@ -243,17 +245,21 @@ function giveCards(qta, p) {
 }
 
 function giveCard(p) {
-	moveRandomCard(deck, p.handSet)
+	var c = moveRandomCard(deck, p.handSet)
+	c.owner = p
+
 }
 
 function moveCard(set1, set2, index) {
-	set2.push(set1[index])
-	set1.splice(index, 1)	
+	var c = set1[index]
+	set2.push(c)
+	set1.splice(index, 1)
+	return c	
 }
 
 function moveRandomCard(set1, set2) {
 	var i1 = Utils.randInt(0, set1.length - 1)
-	moveCard(set1, set2, i1)
+	return moveCard(set1, set2, i1)
 }
 
 /**

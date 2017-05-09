@@ -6,6 +6,7 @@ Card = function(n, v, canBeAffected, desc) {
     this.desc = desc
     this.modifier = null // function affecting the entire playSet
     this.modifierComboEnabled = false // the effect cannot be generally combined with other cards of the same type
+    this.owner = null
     this.run = function() {
     	// As simple as possible
         // TODO : logic to put card in the table shouldn't be here
@@ -31,8 +32,9 @@ Card = function(n, v, canBeAffected, desc) {
             v = this.applyEffect(v, e)
         }
         if (this.canBeAffected) {
-            getAllActiveModifiers().forEach(function(c) {
-                v = c(v)
+            var targetCard = this
+            getAllActiveModifierCards().forEach(function(mCard) {
+                v = mCard.modifier(targetCard, v)
             })
         }
         return v
@@ -65,8 +67,13 @@ Heroine = function() {
 
 Drummer = function() {
 	Card.call(this, "Drummer", 0, false, "Drummer Desc")
-    this.modifier = function(v) {
-        return v * 2
+    // Double the strength of all your mercenary cards
+    this.modifier = function(targetCard, currentValue) {
+        if (targetCard.owner.name == this.owner.name) {
+            return currentValue * 2
+        } else {
+            return currentValue
+        }
     }
 }
 

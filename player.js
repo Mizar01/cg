@@ -16,7 +16,7 @@ function Player(name) {
 
 	this.run = function() {
 		if (this.ai && this.aiFakeTrigger()) {
-console.log("player " + this.name + " is at phase " + phase)
+// console.log("player " + this.name + " is at phase " + phase)
 			// TODO : the switch should only be for ai actions. Everything decided by 
 			// the game rules should not be here.
 			switch(phase) {

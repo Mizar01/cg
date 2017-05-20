@@ -1,13 +1,16 @@
 .cssCard {
 	text-align: center;
-	padding-top: 20px;
+	padding-top: 60px;
 	display: inline-block;
 	width: 80px; max-width: 80px;
-	height: 140px; max-height: 140px;
-	border: 1px solid blue;
+	height: 120px; max-height: 120px;
+	/*border: 1px solid blue;*/
 	margin: 10px;
 	background-color: gold;
 	color: black;
+	background-image: url("../sample.png");
+	background-size: 100%;
+	box-shadow: -5px -5px 3px #555555;
 }
 
 .cssCard .better {
@@ -15,7 +18,7 @@
 	color: green;
 }
 
-cssCars .worse {
+.cssCard .worse {
 	font-weight: bold;
 	color: red;
 }

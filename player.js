@@ -1,7 +1,7 @@
 function Player(name) {
 	this.name = name
-	this.handSet = []   // cards player holds in his hands
-	this.playSet = []   // cards already played and in game on the table
+	this.handSet = new CardSet(this)   // cards player holds in his hands
+	this.playSet = new PlaySet(this) // cards already played and in game on the table
 
 	this.chosenCardIndex
 	this.playCard = false
@@ -44,11 +44,11 @@ function Player(name) {
 
 	}
 	this.chooseRandomCard = function() {
-		this.chosenCardIndex = Utils.randInt(0, this.handSet.length - 1)
+		this.chosenCardIndex = Utils.randInt(0, this.handSet.length() - 1)
 	}
 
 	this.getChosenCard = function() {
-		return this.handSet[this.chosenCardIndex]
+		return this.handSet.cards[this.chosenCardIndex]
 	}
 
 	this.play = function() {

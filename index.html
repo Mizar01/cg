@@ -6,9 +6,10 @@
       <script src="./jq/jquery-2.1.1.min.js"></script>
       <script src="./jq/typed.min.js"></script>
       <script src="./bs/bootstrap.min.js"></script>
-      <script src="game.js"></script>
       <script src="cards.js"></script>
+      <script src="sets.js"></script>
       <script src="player.js"></script>
+      <script src="game.js"></script>
       <!-- Compatible electron afer import -->
       <script>if (window.module) module = window.module;</script>
       <link href="./bs/bootstrap_cyborg.min.css" rel="stylesheet">
@@ -31,17 +32,17 @@
             <div><small>Played Cards</small></div>
             <div>      
                   <div class="row">  
-                        <div class="col-md-9 jumbotron alert alert-success" id="player1-playSet">
+                        <div class="col-md-11 alert alert-success" id="player1-playSet">
                         </div>
-                        <div class="col-md-3 jumbotron alert alert-danger">
-                              <h2 id="player1-points"></h2>
+                        <div class="col-md-1 alert alert-danger">
+                              <h4 id="player1-points"></h4>
                         </div>
                   </div>
                   <div class="row">
-                        <div class="col-md-9 jumbotron alert alert-success" id="player2-playSet">
+                        <div class="col-md-11 alert alert-success" id="player2-playSet">
                         </div>
-                        <div class="col-md-3 jumbotron alert alert-danger">
-                              <h2 id="player2-points"></h2>
+                        <div class="col-md-1 alert alert-danger">
+                              <h4 id="player2-points"></h4>
                         </div>
 
                   </div>

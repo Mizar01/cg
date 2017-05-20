@@ -1,5 +1,19 @@
-var deck = []
-var discardDeck = []
+// List of instantiable classes
+const classes = {
+	Mercenary,
+	Bishop,
+	Heroine,
+	Drummer,
+	Spy,
+	Spring,
+	Winter,
+	Surrender,
+	Scarecrow,
+}
+function getClass(name) { return classes[name] }
+
+const deck = new CardSet()
+const discardDeck = new CardSet()
 var players = []
 var cPlayerIndex //currentPlayer Index
 var cPlayer  // currentPlayer
@@ -19,8 +33,8 @@ var gameSet = {
 		],
 	"Heroine"   : ["3"],
 	"Bishop"    : ["6"],
-	"Drummer"   : ["6"],
-	// "Drummer"   : ["24"],
+	// "Drummer"   : ["6"],
+	"Drummer"   : ["24"],
 	"Scarecrow" : ["16"],
 	"Surrender" : ["3"],
 	"Spy"       : ["12"],
@@ -30,7 +44,7 @@ var gameSet = {
 
 function start() {
 	initDeck()
-	deck = shuffle(deck)
+	deck.shuffle()
 	var p1 = new Player("Me")
 	var p2 = new Player("Tesla")
     players = [p1, p2]
@@ -107,24 +121,17 @@ function runGame() {
 
 
 function getAllActiveModifierCards() {
-	// get all active modifiers from both the playSets
 	var mods = []
-	for (var i in players) {
-		var p = players[i]
-		p.playSet.forEach(function(c) {
-			// TODO : avoid the combos if the combo is not enabled on cards
-			if (c.modifier != null) {
-				mods.push(c)
-			}
-		})
-	}
+	players.forEach(function(p) {
+		mods = mods.concat(p.playSet.getModifierCards())
+	})
 	return mods
 }
 
 function calculatePoints() {
 	players.forEach(function(p) {
 		var tp = 0
-		p.playSet.forEach(function (c) {
+		p.playSet.cards.forEach(function (c) {
 			tp += c.getFinalValue()
 		})
 		p.points = tp
@@ -143,7 +150,7 @@ function gameEndConditions() {
 	var endGame = true
 	players.forEach(function(p) {
 // console.log("Current Player: " + p.name + " hasPassed = " + p.hasPassed + " handSetSize = " + p.handSet.length)
-		if (!p.hasPassed  && p.handSet.length > 0) {
+		if (!p.hasPassed  && p.handSet.length() > 0) {
 			endGame = false
 		}
 	})
@@ -171,35 +178,27 @@ function initDeck() {
 		}else {
 			var qta = parseInt(gameSet[ct][0])
 			for (var i = 0; i < qta; i++) {
-				deck.push(new window[ct]()) 
+				deck.push(new (getClass(ct))()) 
 			}
 		}
 	}
 }
-function shuffle2(set) {
-	// choose 2 cards and swap them for a number of times
-	for (var i = 0; i < 1000; i++) {
-		var i1 = Utils.randInt(0, set.length - 1)
-		var i2 = Utils.randInt(0, set.length - 1)
-		var tc = set[i1]
-		set[i1] = set[i2]
-		set[i2] = tc
-	}
-	return set
-}
-
-function shuffle(set) {
-	var set2 = []
-	while (set.length > 0) {
-		moveRandomCard(set, set2)
-	}
-	return set2
-}
+// function shuffle2(set) {
+// 	// choose 2 cards and swap them for a number of times
+// 	for (var i = 0; i < 1000; i++) {
+// 		var i1 = Utils.randInt(0, set.length - 1)
+// 		var i2 = Utils.randInt(0, set.length - 1)
+// 		var tc = set[i1]
+// 		set[i1] = set[i2]
+// 		set[i2] = tc
+// 	}
+// 	return set
+// }
 
 function htmlListCards(set, id, inPlay=false) {
 	var t = ""
-	for (var ci in set) {
-		var c = set[ci]
+	for (var ci in set.cards) {
+		var c = set.cards[ci]
 		var cname = c.short ? c.short : c.name
 		var fvalue = inPlay ? c.getFinalValue() : c.value
 		var styleValue = ""
@@ -209,11 +208,11 @@ function htmlListCards(set, id, inPlay=false) {
 		if (c.value > fvalue) {
 			styleValue = "worse"
 		}
-		var htmlValue = "(" + fvalue + ")"
+		var htmlValue = "-" + fvalue
 		if (fvalue == c.value && c.value == 0) {
 			htmlValue = ""
 		}
-		t += "<div class='cssCard'>" + cname + "<span class='" + styleValue + "'>" + htmlValue + "</span></div>"
+		t += "<div class='cssCard'>" + cname + "<span class='" + styleValue + "'>" + htmlValue + "-" + c.value + "</span></div>"
 		// t += "<span>[" + cname + "<strong>" + (c.value != 0 ? "(" + c.value + ")" : "") + "</strong>]</span>"
 	}
 	$("#" + id).html(t)
@@ -251,14 +250,14 @@ function giveCard(p) {
 }
 
 function moveCard(set1, set2, index) {
-	var c = set1[index]
+	var c = set1.cards[index]
 	set2.push(c)
 	set1.splice(index, 1)
 	return c	
 }
 
 function moveRandomCard(set1, set2) {
-	var i1 = Utils.randInt(0, set1.length - 1)
+	var i1 = Utils.randInt(0, set1.length() - 1)
 	return moveCard(set1, set2, i1)
 }
 
@@ -266,7 +265,8 @@ function moveRandomCard(set1, set2) {
  * Get a card from a set without removing it from the set.
  */
 function getRandomCard(set) {
-	return set[Utils.randInt(0, set.length - 1)]
+	var cards = set.cards
+	return cards[Utils.randInt(0, cards.length - 1)]
 }
 
 
